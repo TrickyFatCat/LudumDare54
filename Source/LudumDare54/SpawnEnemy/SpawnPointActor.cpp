@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include "LudumDare54/Enemy/BaseEnemy.h"
 
 // Sets default values
 ASpawnPointActor::ASpawnPointActor()
@@ -21,27 +22,27 @@ ASpawnPointActor::ASpawnPointActor()
 	CollisionComponent->OnComponentEndOverlap.AddDynamic(this, &ASpawnPointActor::OnEndOverlap);
 }
 
-bool ASpawnPointActor::Spawn(UClass* Monster)
+AUBaseEnemy* ASpawnPointActor::Spawn(UClass* Monster)
 {
-	if (bIsBlocked || State != EWaveState::Ready || GetWorld() == nullptr) return false;
+	if (bIsBlocked || State != EWaveState::Ready || GetWorld() == nullptr) return nullptr;
 
 	State = EWaveState::InSpawn;
 
 	const auto Location = GetActorLocation();
 	const auto Rotation = GetActorRotation();
-	const auto Actor = GetWorld()->SpawnActor(Monster, &Location, &Rotation);
-	if (Actor == nullptr) return false;
+	const auto Actor = Cast<AUBaseEnemy>(GetWorld()->SpawnActor(Monster, &Location, &Rotation));
+	if (Actor == nullptr) return nullptr;
 
 	// FHitResult HitResult;
 	// HitResult.ImpactPoint = Actor->GetActorLocation();
 	// ProjectileFX->PlayFXAtPoint(HitResult);
 
-	Cast<ACharacter>(Actor)->GetMesh()->SetVisibility(true);
+	Cast<AUBaseEnemy>(Actor)->GetMesh()->SetVisibility(true);
 	State = EWaveState::Frozen;
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASpawnPointActor::RemoveFreeze, FreezingTime);
 
-	return Actor != nullptr;
+	return Actor;
 }
 
 void ASpawnPointActor::OnOverlap(

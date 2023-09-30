@@ -5,7 +5,7 @@
 
 #include "EngineUtils.h"
 #include "SpawnPointActor.h"
-#include "GameFramework/Character.h"
+#include "LudumDare54/Enemy/BaseEnemy.h"
 
 DECLARE_LOG_CATEGORY_CLASS(LogSpawnEnemySystem, All, All);
 
@@ -15,15 +15,73 @@ ASpawnEnemySystem::ASpawnEnemySystem(): WaveData()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void ASpawnEnemySystem::SortedSpawnActors()
+void ASpawnEnemySystem::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SpawnPoints.Reset();
+	CurrentWave = 0;
+
+	for (TActorIterator<ASpawnPointActor> It(GetWorld()); It; ++It) { SpawnPoints.Add(*It); }
+	UE_LOG(LogSpawnEnemySystem, Display, TEXT("Count wave: %i."), SpawnPoints.Num());
+
+	if (Waves.IsEmpty()) return;
+	GetWorldTimerManager().SetTimer(RoundTimerHandle, this, &ASpawnEnemySystem::StartWave, WaveTimeDelay, false);
+}
+
+void ASpawnEnemySystem::StartWave()
+{
+	if (CurrentWave == Waves.Num())
+	{
+		UE_LOG(LogSpawnEnemySystem, Display, TEXT("All waves finished."));
+		return OnAllRoundFinished.Broadcast();
+	}
+
+	UE_LOG(LogSpawnEnemySystem, Display, TEXT("Start %i wave."), CurrentWave);
+
+	WaveData = GenerateEnemies(CurrentWave);
+	GetWorldTimerManager().SetTimer(WaveTimerHandle, this, &ASpawnEnemySystem::CreateWave, SpawnDelayDuringWave, true);
+	OnRoundStarted.Broadcast();
+	CurrentWave++;
+}
+
+void ASpawnEnemySystem::CreateWave()
+{
+	UE_LOG(LogSpawnEnemySystem, Display, TEXT("Spawn round."));
+	for (int i = 0; i < WaveData.CountOfEnemiesAtOnce; i++)
+	{
+		if (WaveData.Enemies.Num() == 0) break;
+		SortedSpawnPoints();
+		for (ASpawnPointActor* SpawnActor : SpawnPoints)
+		{
+			if (const auto Enemy = SpawnActor->Spawn(WaveData.Enemies[WaveData.Enemies.Num() - 1]); Enemy != nullptr)
+			{
+				Enemy->OnEnemyDied.AddDynamic(this, &ASpawnEnemySystem::ApplyEnemyDeath);
+				WaveData.SpawnedEnemiesCount++;
+				WaveData.Enemies.RemoveAt(WaveData.Enemies.Num() - 1);
+				break;
+			}
+		}
+	}
+
+	if (WaveData.Enemies.Num() == 0)
+	{
+		UE_LOG(LogSpawnEnemySystem, Display, TEXT("Finish wave."));
+		GetWorldTimerManager().ClearTimer(WaveTimerHandle);
+		OnSpawnRoundFinished.Broadcast();
+		WaveData.SpawnFinished = true;
+	}
+}
+
+void ASpawnEnemySystem::SortedSpawnPoints()
 {
 	if (bIsRandomSpawn)
 	{
-		const int32 LastIndex = SpawnActors.Num() - 1;
+		const int32 LastIndex = SpawnPoints.Num() - 1;
 		for (int32 y = 0; y <= LastIndex; ++y)
 		{
 			const int32 Index = FMath::RandRange(y, LastIndex);
-			if (y != Index) { SpawnActors.Swap(y, Index); }
+			if (y != Index) { SpawnPoints.Swap(y, Index); }
 		}
 		return;
 	}
@@ -35,59 +93,25 @@ void ASpawnEnemySystem::SortedSpawnActors()
 	if (Pawn == nullptr) return;
 
 	const auto Location = Pawn->GetActorLocation();
-	SpawnActors.Sort([Location](const ASpawnPointActor& A, const ASpawnPointActor& B)
+	SpawnPoints.Sort([Location](const ASpawnPointActor& A, const ASpawnPointActor& B)
 	{
 		return FVector::Dist(Location, A.GetActorLocation()) < FVector::Dist(Location, B.GetActorLocation());
 	});
 }
 
-void ASpawnEnemySystem::CallSpawn()
+void ASpawnEnemySystem::ApplyEnemyDeath()
 {
-	UE_LOG(LogSpawnEnemySystem, Display, TEXT("Spawn round."));
-	for (int i = 0; i < WaveData.CountOfEnemiesAtOnce; i++)
+	WaveData.DeathCount++;
+	if (WaveData.SpawnFinished && WaveData.DeathCount >= WaveData.SpawnedEnemiesCount)
 	{
-		if (WaveData.Enemies.Num() == 0) break;
-		SortedSpawnActors();
-		for (ASpawnPointActor* SpawnActor : SpawnActors)
-		{
-			if (SpawnActor->Spawn(WaveData.Enemies[WaveData.Enemies.Num() - 1]))
-			{
-				WaveData.Spawned++;
-				WaveData.Enemies.RemoveAt(WaveData.Enemies.Num() - 1);
-				break;
-			}
-		}
-	}
-
-	if (WaveData.Enemies.Num() == 0)
-	{
-		UE_LOG(LogSpawnEnemySystem, Display, TEXT("Finish wave."));
-		GetWorldTimerManager().ClearTimer(WaveTimerHandle);
-		GetWorldTimerManager().SetTimer(RoundTimerHandle, this, &ASpawnEnemySystem::StartRound, RoundTimeDelay, false);
-		OnSpawnRoundFinished.Broadcast();
+		GetWorldTimerManager().SetTimer(RoundTimerHandle, this, &ASpawnEnemySystem::StartWave, WaveTimeDelay, false);
 		OnRoundFinished.Broadcast();
 	}
 }
 
-void ASpawnEnemySystem::StartRound()
-{
-	if (CurrentWave == Waves.Num())
-	{
-		UE_LOG(LogSpawnEnemySystem, Display, TEXT("All waves finished."));
-		return OnAllRoundFinished.Broadcast();
-	}
-
-	UE_LOG(LogSpawnEnemySystem, Display, TEXT("Start %i wave."), CurrentWave);
-
-	WaveData = GenerateEnemies(CurrentWave);
-	GetWorldTimerManager().SetTimer(WaveTimerHandle, this, &ASpawnEnemySystem::CallSpawn, WaveDelayTime, true);
-	OnRoundStarted.Broadcast();
-	CurrentWave++;
-}
-
 FWaveData ASpawnEnemySystem::GenerateEnemies(const int WaveIndex)
 {
-	TArray<TSubclassOf<ACharacter>> Enemies;
+	TArray<TSubclassOf<AUBaseEnemy>> Enemies;
 
 	TArray<FEnemiesInWaveData*> AllEnemies;
 	Waves[WaveIndex]->GetAllRows<FEnemiesInWaveData>("", AllEnemies);
@@ -103,19 +127,5 @@ FWaveData ASpawnEnemySystem::GenerateEnemies(const int WaveIndex)
 		if (i != Index) { Enemies.Swap(i, Index); }
 	}
 
-	return {Enemies, WaveDelayTime, WaveMaxAtTime};
-}
-
-void ASpawnEnemySystem::BeginPlay()
-{
-	Super::BeginPlay();
-
-	SpawnActors.Reset();
-	CurrentWave = 0;
-
-	for (TActorIterator<ASpawnPointActor> It(GetWorld()); It; ++It) { SpawnActors.Add(*It); }
-	UE_LOG(LogSpawnEnemySystem, Display, TEXT("Count wave: %i."), SpawnActors.Num());
-
-	if (Waves.IsEmpty()) return;
-	GetWorldTimerManager().SetTimer(RoundTimerHandle, this, &ASpawnEnemySystem::StartRound, WaveDelayTime, false);
+	return {Enemies, SpawnDelayDuringWave, CountOfEnemiesAtOnce};
 }
