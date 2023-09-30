@@ -3,6 +3,8 @@
 
 #include "TrickyPlayerControllerBase.h"
 
+#include "Kismet/GameplayStatics.h"
+
 
 ATrickyPlayerControllerBase::ATrickyPlayerControllerBase()
 {
@@ -41,6 +43,8 @@ void ATrickyPlayerControllerBase::HandleGameStateChange_Implementation(EGameMode
 	{
 	case EGameModeState::InProgress:
 		ToggleInput(true, bShowCursorOnStart, FInputModeGameOnly());
+		UGameplayStatics::SetViewportMouseCaptureMode(this,
+		                                              EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown);
 		break;
 
 	case EGameModeState::Lose:
