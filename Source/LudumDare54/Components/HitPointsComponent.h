@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SimpleEntityResource.h"
+#include "Components/SimpleResourceComponent.h"
 #include "HitPointsComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LUDUMDARE54_API UHitPointsComponent : public USimpleEntityResource
+class LUDUMDARE54_API UHitPointsComponent : public USimpleResourceComponent 
 {
 	GENERATED_BODY()
 };
