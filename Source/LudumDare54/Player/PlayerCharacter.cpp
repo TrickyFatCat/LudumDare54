@@ -30,6 +30,8 @@ void APlayerCharacter::BeginPlay()
 		}
 	}
 
+	PlayerController->SetControlRotation(FRotator(0.f, -45.f, 0.f));
+	
 	Super::BeginPlay();
 }
 
