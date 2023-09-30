@@ -2,3 +2,13 @@
 
 
 #include "LudumGameInstance.h"
+
+void ULudumGameInstance::IncreaseStageNumber()
+{
+	StageNumber++;
+}
+
+void ULudumGameInstance::ResetStageNumber()
+{
+	StageNumber = DefaultStageNumber;
+}

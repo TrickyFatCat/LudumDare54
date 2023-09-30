@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "LudumGameInstance.generated.h"
 
+constexpr int32 DefaultStageNumber = 1;
+
 /**
  * 
  */
@@ -13,4 +15,14 @@ UCLASS()
 class LUDUMDARE54_API ULudumGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+
+public:
+	void IncreaseStageNumber();
+
+	UFUNCTION(BlueprintCallable)
+	void ResetStageNumber();
+
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	int32 StageNumber = 1;
 };
