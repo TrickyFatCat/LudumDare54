@@ -11,6 +11,7 @@ class UInputMappingContext;
 class UInputAction;
 class UHitPointsComponent;
 class APlayerController;
+class UWeaponManagerComponent;
 
 UCLASS()
 class LUDUMDARE54_API APlayerCharacter : public ACharacter
@@ -29,8 +30,11 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Category="Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UHitPointsComponent> HitPointsComponent = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent = nullptr;
 
 private:
 	UPROPERTY()
@@ -65,7 +69,9 @@ private:
 	                         const FVector& PlaneOrigin,
 	                         const FVector& PlaneNormal,
 	                         FVector& Intersection);
-	void Shoot();
+	void StartShooting();
+
+	void StopShooting();
 
 	void UseAbility();
 
