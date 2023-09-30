@@ -1,0 +1,41 @@
+{
+	"FileVersion": 3,
+	"Version": 6,
+	"VersionName": "2.0.1",
+	"FriendlyName": "TrickyDoors",
+	"Description": "A plugin with a collection of door actors.",
+	"Category": "TrickyPrototyping",
+	"CreatedBy": "Artyom \"Tricky_Fat_Cat\" Volkov",
+	"CreatedByURL": "https://twitter.com/tricky_fat_cat",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "TrickyDoors",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "TrickyInteractionSystem",
+			"Enabled": true
+		},
+		{
+			"Name": "TrickyAnimationComponents",
+			"Enabled": true
+		},
+		{
+			"Name": "TrickyKeyringSystem",
+			"Enabled": true
+		}
+	]
+}

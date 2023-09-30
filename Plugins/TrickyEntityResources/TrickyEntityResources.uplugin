@@ -1,0 +1,27 @@
+{
+	"FileVersion": 3,
+	"Version": 5,
+	"VersionName": "2.0.1",
+	"FriendlyName": "TrickyEntityResources",
+	"Description": "Collection of game objects which helps to implement health, mana, stamina, overheat etc.",
+	"Category": "TrickyPrototyping",
+	"CreatedBy": "Artyom \"Tricky_Fat_Cat\" Volkov",
+	"CreatedByURL": "https://twitter.com/tricky_fat_cat",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "TrickyEntityResources",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		}
+	]
+}
