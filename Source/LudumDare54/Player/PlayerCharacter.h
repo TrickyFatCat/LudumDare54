@@ -33,7 +33,6 @@ public:
 	TObjectPtr<UHitPointsComponent> HitPointsComponent = nullptr;
 
 protected:
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent = nullptr;
 
