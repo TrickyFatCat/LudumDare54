@@ -61,7 +61,7 @@ void ASpawnEnemySystem::CallSpawn()
 		SortedSpawnActors();
 		for (ASpawnPointActor* SpawnActor : SpawnActors)
 		{
-			if (const auto Enemy = SpawnActor->Spawn(WaveData.Enemies[WaveData.Enemies.Num() - 1]); Enemy == nullptr)
+			if (const auto Enemy = SpawnActor->Spawn(WaveData.Enemies[WaveData.Enemies.Num() - 1]); Enemy != nullptr)
 			{
 				Enemy->OnEnemyDied.AddDynamic(this, &ASpawnEnemySystem::ApplyEnemyDeath);
 				WaveData.SpawnedEnemiesCount++;
