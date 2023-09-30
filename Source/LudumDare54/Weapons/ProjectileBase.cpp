@@ -15,12 +15,20 @@ AProjectileBase::AProjectileBase()
 
 void AProjectileBase::BeginPlay()
 {
-	Super::BeginPlay();
+	ProjectileMovementComponent->Velocity = MovementDirection * ProjectileMovementComponent->InitialSpeed;
+	// ProjectileCollision->IgnoreActorWhenMoving(GetOwner(), true);
 	
+	Super::BeginPlay();
 }
 
 void AProjectileBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AProjectileBase::SetProjectileData(const FVector& Direction, const int32 Damage)
+{
+	MovementDirection = Direction;
+	Power = Damage <= 0 ? 1 : Damage;
 }
 

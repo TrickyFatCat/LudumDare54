@@ -25,4 +25,12 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
+
+public:
+	void SetProjectileData(const FVector& Direction, const int32 Damage);
+
+private:
+	FVector MovementDirection = FVector::ForwardVector;
+
+	int32 Power = 1;
 };
