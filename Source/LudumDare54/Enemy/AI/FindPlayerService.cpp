@@ -5,7 +5,6 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "LudumDare54/Components/HitPointsComponent.h"
-#include "LudumDare54/Player/PlayerCharacter.h"
 
 UFindPlayerService::UFindPlayerService()
 {
@@ -14,20 +13,17 @@ UFindPlayerService::UFindPlayerService()
 
 void UFindPlayerService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+	const auto Controller = OwnerComp.GetAIOwner();
 	const auto Blackboard = OwnerComp.GetBlackboardComponent();
-	if (
-		Blackboard &&
-		GetWorld() != nullptr &&
-		GetWorld()->GetFirstPlayerController() != nullptr &&
-		GetWorld()->GetFirstPlayerController()->GetPawn() != nullptr
-	)
+	
+	if (Blackboard && Controller)
 	{
-		const auto Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-		if (Player == nullptr) return;
+		const auto HP = GetWorld()->GetFirstPlayerController()->GetPawn()->FindComponentByClass<UHitPointsComponent>();
+		if (HP == nullptr) return;
 
 		Blackboard->SetValueAsObject(
 			PlayerActorKey.SelectedKeyName,
-			Player->HitPointsComponent->GetValue() == 0 ? nullptr : GetWorld()->GetFirstPlayerController()->GetPawn()
+			HP->GetValue() == 0 ? nullptr : GetWorld()->GetFirstPlayerController()->GetPawn()
 		);
 	}
 

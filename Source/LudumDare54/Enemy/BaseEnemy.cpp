@@ -26,11 +26,10 @@ AUBaseEnemy::AUBaseEnemy()
 	}
 }
 
-void AUBaseEnemy::PlayDeathMontage()
+void AUBaseEnemy::Die()
 {
-	GetCapsuleComponent()->SetCollisionResponseToChannels(ECollisionResponse::ECR_Ignore);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	GetMesh()->SetCollisionResponseToChannels(ECR_Ignore);
+	HitPointsComponent->OnValueZero.RemoveDynamic(this, &AUBaseEnemy::Die);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PlayAnimMontage(DeathMontage);
 	SpawnPickup();
 }
@@ -47,14 +46,26 @@ void AUBaseEnemy::SpawnPickup() const
 	);
 }
 
+float AUBaseEnemy::TakeDamage(
+	float DamageAmount,
+	FDamageEvent const& DamageEvent,
+	AController* EventInstigator,
+	AActor* DamageCauser
+)
+{
+	HitPointsComponent->DecreaseValue(DamageAmount);
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
 void AUBaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	HitPointsComponent->OnValueZero.AddDynamic(this, &AUBaseEnemy::PlayDeathMontage);
+	HitPointsComponent->OnValueZero.AddDynamic(this, &AUBaseEnemy::Die);
 }
 
 void AUBaseEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	HitPointsComponent->OnValueZero.RemoveDynamic(this, &AUBaseEnemy::Die);
 	OnEnemyDied.Broadcast();
 	Super::EndPlay(EndPlayReason);
 }

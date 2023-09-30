@@ -28,13 +28,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI")
 	UBehaviorTree* BehaviorTreeAsset;
 
+protected:
 	UPROPERTY(BlueprintReadOnly, Category="Components")
 	TObjectPtr<UHitPointsComponent> HitPointsComponent = nullptr;
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Enemy")
-	void OnDeathFinished();
-
-protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animations")
 	TObjectPtr<UAnimMontage> DeathMontage = nullptr;
 
@@ -44,10 +41,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Drop")
 	TSubclassOf<APickupBase> PickupClass = nullptr;
 
-	UFUNCTION()
-	void PlayDeathMontage();
-	void SpawnPickup() const;
-
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+private:
+	UFUNCTION()
+	void Die();
+	void SpawnPickup() const;
+
+	virtual float TakeDamage(
+		float DamageAmount,
+		FDamageEvent const& DamageEvent,
+		AController* EventInstigator,
+		AActor* DamageCauser
+	) override;
 };

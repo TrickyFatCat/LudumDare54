@@ -5,8 +5,6 @@
 #include "BaseEnemy.h"
 #include "BrainComponent.h"
 #include "EnemyPerceptionComponent.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "LudumDare54/Components/HitPointsComponent.h"
 #include "Navigation/CrowdFollowingComponent.h"
 
 AEnemyController::AEnemyController(const FObjectInitializer& ObjectInitializer)
@@ -24,21 +22,11 @@ void AEnemyController::OnPossess(APawn* InPawn)
 	if (Char == nullptr) return;
 
 	RunBehaviorTree(Char->BehaviorTreeAsset);
+	Char->OnEnemyDied.AddDynamic(this, &AEnemyController::StopLogic);
 }
 
-void AEnemyController::Tick(float DeltaTime)
+void AEnemyController::StopLogic()
 {
-	Super::Tick(DeltaTime);
-	SetFocus(GetFocusOnActor());
-}
-
-AActor* AEnemyController::GetFocusOnActor() const
-{
-	const auto Enemy = Cast<AUBaseEnemy>(GetPawn());
-	if (Enemy == nullptr) return nullptr;
-
-	if (Enemy->HitPointsComponent->GetValue() == 0) return nullptr;
-	if (GetBlackboardComponent() == nullptr) return nullptr;
-	
-	return Cast<AActor>(GetBlackboardComponent()->GetValueAsObject(FocusOnKeyName));
+	BrainComponent->StopLogic("Die");
+	BrainComponent->Cleanup();
 }
