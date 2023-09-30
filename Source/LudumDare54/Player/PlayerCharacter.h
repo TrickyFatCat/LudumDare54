@@ -29,10 +29,11 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	UPROPERTY(BlueprintReadOnly, Category="Components")
 	TObjectPtr<UHitPointsComponent> HitPointsComponent = nullptr;
-	
+
+protected:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent = nullptr;
 

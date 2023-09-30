@@ -20,7 +20,9 @@ public class LudumDare54 : ModuleRules
 			"TrickyUserInterface",
 			"TrickyGameMode",
 			"TrickyEntityResources",
-			"TrickyLevelHelpers"
+			"TrickyLevelHelpers",
+			"TrickyPickups",
+			"AIModule",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
