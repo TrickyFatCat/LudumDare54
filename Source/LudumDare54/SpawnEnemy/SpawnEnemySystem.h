@@ -9,19 +9,21 @@
 class ASpawnPointActor;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRoundStarted);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpawnRoundFinished);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRoundFinished);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllRoundFinished);
+
 USTRUCT(BlueprintType)
-struct FEnemyData : public FTableRowBase
+struct FEnemiesInWaveData : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
-	 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
-	 TSubclassOf<ACharacter> Enemy;
-    
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (ClampMin = "1", UIMin = "1"))
-	int Weight;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+	TSubclassOf<ACharacter> Enemy;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (ClampMin = "1", UIMin = "1"))
 	int Count;
 };
@@ -31,20 +33,17 @@ struct FWaveData
 {
 	GENERATED_USTRUCT_BODY()
 
-	 UPROPERTY(BlueprintReadOnly)
-	 TArray<TSubclassOf<ACharacter>> Enemies;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<TSubclassOf<ACharacter>> Enemies;
 
 	UPROPERTY(BlueprintReadOnly)
-	int MaxEnemies;
+	float SpawnDelayDuringWave;
 
 	UPROPERTY(BlueprintReadOnly)
-	int Spawned;
-	
-	UPROPERTY(BlueprintReadOnly)
-	float DelayTime;
+	int CountOfEnemiesAtOnce;
 
 	UPROPERTY(BlueprintReadOnly)
-	int MaxAtTime;
+	int Spawned = 0;
 };
 
 UCLASS()
@@ -57,11 +56,11 @@ public:
 	void SortedSpawnActors();
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateWave(UDataTable* Data) { Wave = Data; }
-	
+	void AddWave(UDataTable* Data) { Waves.Add(Data); }
+
 	UFUNCTION(BlueprintCallable)
 	void UpdateWaveDelay(const float Second) { WaveDelayTime = Second; }
-	
+
 	UFUNCTION(BlueprintCallable)
 	void UpdateWaveMaxAtTime(const float MonsterCount) { WaveMaxAtTime = MonsterCount; }
 
@@ -70,35 +69,39 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateRandomSpawn(const bool Random) { RoundTimeDelay = Random; }
-	
+
 	UPROPERTY(BlueprintAssignable)
 	FOnRoundStarted OnRoundStarted;
 
 	UPROPERTY(BlueprintAssignable)
+	FOnSpawnRoundFinished OnSpawnRoundFinished;
+
+	UPROPERTY(BlueprintAssignable)
 	FOnRoundFinished OnRoundFinished;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAllRoundFinished OnAllRoundFinished;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
-	UDataTable* Wave;
-	
+	TArray<UDataTable*> Waves;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
 	float WaveDelayTime = 2.0f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
 	int WaveMaxAtTime = 2;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
 	float RoundTimeDelay = 20.0f;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
 	bool bIsRandomSpawn = true;
 
 
 	void CallSpawn();
-
-	void CallRound();
-
-	FWaveData GenerateEnemies();
+	void StartRound();
+	FWaveData GenerateEnemies(int WaveIndex);
 
 	virtual void BeginPlay() override;
 
@@ -109,4 +112,5 @@ private:
 	FTimerHandle WaveTimerHandle;
 
 	FWaveData WaveData;
+	int CurrentWave = 0;
 };
