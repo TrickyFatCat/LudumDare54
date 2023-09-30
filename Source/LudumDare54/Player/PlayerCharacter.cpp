@@ -9,12 +9,14 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
 #include "LudumDare54/Components/HitPointsComponent.h"
+#include "LudumDare54/Components/WeaponManagerComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	HitPointsComponent = CreateDefaultSubobject<UHitPointsComponent>("HitPoints");
+	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManager");
 }
 
 void APlayerCharacter::BeginPlay()
@@ -52,7 +54,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 
 		//Shooting
-		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Shoot);
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &APlayerCharacter::StartShooting);
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopShooting);
+		
 
 		//Using Ability
 		EnhancedInputComponent->BindAction(AbilityAction, ETriggerEvent::Triggered, this,
@@ -130,9 +134,14 @@ bool APlayerCharacter::CalculateProjection(const FVector& RayOrigin,
 	return Dot2 != 0.f;
 }
 
-void APlayerCharacter::Shoot()
+void APlayerCharacter::StartShooting()
 {
-	UE_LOG(LogTemp, Error, TEXT("PEW PEW PEW"));
+	WeaponManagerComponent->StartShooting(0);
+}
+
+void APlayerCharacter::StopShooting()
+{
+	WeaponManagerComponent->StopShooting(0);
 }
 
 void APlayerCharacter::UseAbility()
