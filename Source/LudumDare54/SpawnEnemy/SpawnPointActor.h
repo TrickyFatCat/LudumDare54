@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "LudumDare54/Enemy/BaseEnemy.h"
 #include "SpawnPointActor.generated.h"
 
 class USphereComponent;
@@ -24,8 +25,8 @@ class LUDUMDARE54_API ASpawnPointActor : public AActor
 
 public:
 	ASpawnPointActor();
-	
-	bool Spawn(UClass* Monster);
+
+	AUBaseEnemy* Spawn(UClass* Monster);
 	
 	UFUNCTION(BlueprintCallable)
 	void Lock() { State = EWaveState::Block; };

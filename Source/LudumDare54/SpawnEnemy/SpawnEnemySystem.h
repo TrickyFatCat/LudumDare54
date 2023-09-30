@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "SpawnEnemySystem.generated.h"
 
+class AUBaseEnemy;
 class ASpawnPointActor;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRoundStarted);
@@ -22,7 +23,7 @@ struct FEnemiesInWaveData : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
-	TSubclassOf<ACharacter> Enemy;
+	TSubclassOf<AUBaseEnemy> Enemy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (ClampMin = "1", UIMin = "1"))
 	int Count;
@@ -34,7 +35,7 @@ struct FWaveData
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<TSubclassOf<ACharacter>> Enemies;
+	TArray<TSubclassOf<AUBaseEnemy>> Enemies;
 
 	UPROPERTY(BlueprintReadOnly)
 	float SpawnDelayDuringWave;
@@ -43,7 +44,13 @@ struct FWaveData
 	int CountOfEnemiesAtOnce;
 
 	UPROPERTY(BlueprintReadOnly)
-	int Spawned = 0;
+	int SpawnedEnemiesCount = 0;
+	
+	UPROPERTY(BlueprintReadOnly)
+	int DeathCount = 0; 
+		
+	UPROPERTY(BlueprintReadOnly)
+	bool SpawnFinished = false; 
 };
 
 UCLASS()
@@ -59,10 +66,10 @@ public:
 	void AddWave(UDataTable* Data) { Waves.Add(Data); }
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateWaveDelay(const float Second) { WaveDelayTime = Second; }
+	void UpdateWaveDelay(const float Second) { SpawnDelayDuringWave = Second; }
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateWaveMaxAtTime(const float MonsterCount) { WaveMaxAtTime = MonsterCount; }
+	void UpdateWaveMaxAtTime(const float MonsterCount) { CountOfEnemiesAtOnce = MonsterCount; }
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateWaveRoundTime(const float Second) { RoundTimeDelay = Second; }
@@ -87,18 +94,20 @@ protected:
 	TArray<UDataTable*> Waves;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
-	float WaveDelayTime = 2.0f;
+	float SpawnDelayDuringWave = 2.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
-	int WaveMaxAtTime = 2;
+	int CountOfEnemiesAtOnce = 2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
-	float RoundTimeDelay = 20.0f;
+	float RoundTimeDelay = 2.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
 	bool bIsRandomSpawn = true;
 
 
+	UFUNCTION()
+	void ApplyEnemyDeath();
 	void CallSpawn();
 	void StartRound();
 	FWaveData GenerateEnemies(int WaveIndex);
