@@ -9,6 +9,9 @@
 AWeaponBase::AWeaponBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	Root = CreateDefaultSubobject<USceneComponent>("Root");
+	SetRootComponent(Root);
 }
 
 void AWeaponBase::BeginPlay()

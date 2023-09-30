@@ -7,6 +7,7 @@
 #include "WeaponBase.generated.h"
 
 class AProjectileBase;
+class USceneComponent;
 
 UCLASS()
 class LUDUMDARE54_API AWeaponBase : public AActor
@@ -46,6 +47,9 @@ public:
 	bool StopShooting();
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<USceneComponent> Root = nullptr;
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsShooting = false;
 
