@@ -60,7 +60,7 @@ class LUDUMDARE54_API ASpawnEnemySystem : public AActor
 
 public:
 	ASpawnEnemySystem();
-	void SortedSpawnActors();
+	void SortedSpawnPoints();
 
 	UFUNCTION(BlueprintCallable)
 	void AddWave(UDataTable* Data) { Waves.Add(Data); }
@@ -72,10 +72,10 @@ public:
 	void UpdateWaveMaxAtTime(const float MonsterCount) { CountOfEnemiesAtOnce = MonsterCount; }
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateWaveRoundTime(const float Second) { RoundTimeDelay = Second; }
+	void UpdateWaveRoundTime(const float Second) { WaveTimeDelay = Second; }
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateRandomSpawn(const bool Random) { RoundTimeDelay = Random; }
+	void UpdateRandomSpawn(const bool Random) { WaveTimeDelay = Random; }
 
 	UPROPERTY(BlueprintAssignable)
 	FOnRoundStarted OnRoundStarted;
@@ -100,7 +100,7 @@ protected:
 	int CountOfEnemiesAtOnce = 2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
-	float RoundTimeDelay = 2.0f;
+	float WaveTimeDelay = 2.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
 	bool bIsRandomSpawn = true;
@@ -108,14 +108,14 @@ protected:
 
 	UFUNCTION()
 	void ApplyEnemyDeath();
-	void CallSpawn();
-	void StartRound();
+	void CreateWave();
+	void StartWave();
 	FWaveData GenerateEnemies(int WaveIndex);
 
 	virtual void BeginPlay() override;
 
 private:
-	TArray<ASpawnPointActor*> SpawnActors;
+	TArray<ASpawnPointActor*> SpawnPoints;
 
 	FTimerHandle RoundTimerHandle;
 	FTimerHandle WaveTimerHandle;
