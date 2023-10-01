@@ -87,3 +87,13 @@ bool UWeaponManagerComponent::SetWeaponTargetPoint(const int32 WeaponId, const F
 	Weapons[WeaponId]->TargetPoint = TargetPoint;
 	return true;
 }
+
+bool UWeaponManagerComponent::IsWeaponShooting(const int32 WeaponId) const
+{
+	if (!IsValidId(WeaponId))
+	{
+		return false;
+	}
+
+	return Weapons[WeaponId]->GetIsShooting();
+}

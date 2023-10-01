@@ -12,6 +12,7 @@ class UInputAction;
 class UHitPointsComponent;
 class APlayerController;
 class UWeaponManagerComponent;
+class USkeletalMeshComponent;
 
 UCLASS()
 class LUDUMDARE54_API APlayerCharacter : public ACharacter
@@ -30,7 +31,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Category="Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	TObjectPtr<USkeletalMeshComponent> WeaponMesh = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UHitPointsComponent> HitPointsComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
@@ -40,6 +44,7 @@ private:
 	UPROPERTY()
 	APlayerController* PlayerController = nullptr;
 
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	FVector ProjectionLocation = FVector::ZeroVector;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -69,6 +74,11 @@ private:
 	                         const FVector& PlaneOrigin,
 	                         const FVector& PlaneNormal,
 	                         FVector& Intersection);
+
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateWeaponTargetPoint(const int32 WeaponId);
+	
 	void StartShooting();
 
 	void StopShooting();

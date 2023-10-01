@@ -10,11 +10,15 @@
 #include "GameFramework/PlayerController.h"
 #include "LudumDare54/Components/HitPointsComponent.h"
 #include "LudumDare54/Components/WeaponManagerComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
+	WeaponMesh->SetupAttachment(GetMesh());
+	
 	HitPointsComponent = CreateDefaultSubobject<UHitPointsComponent>("HitPoints");
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManager");
 }
@@ -22,7 +26,7 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	PlayerController = Cast<APlayerController>(Controller);
-	
+
 	if (PlayerController)
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
@@ -33,7 +37,9 @@ void APlayerCharacter::BeginPlay()
 	}
 
 	PlayerController->SetControlRotation(FRotator(0.f, -45.f, 0.f));
-	
+
+	WeaponMesh->SetLeaderPoseComponent(GetMesh());
+
 	Super::BeginPlay();
 }
 
@@ -55,8 +61,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		//Shooting
 		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &APlayerCharacter::StartShooting);
-		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopShooting);
-		
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this,
+		                                   &APlayerCharacter::StopShooting);
+
 
 		//Using Ability
 		EnhancedInputComponent->BindAction(AbilityAction, ETriggerEvent::Triggered, this,
@@ -87,6 +94,11 @@ void APlayerCharacter::AimAtCursor()
 	ProjectCursorToWorld();
 	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), ProjectionLocation);
 	SetActorRotation(FRotator(0.f, TargetRotation.Yaw, 0.f));
+
+	if (WeaponManagerComponent->IsWeaponShooting(0))
+	{
+		UpdateWeaponTargetPoint(0);
+	}
 }
 
 void APlayerCharacter::ProjectCursorToWorld()
@@ -132,6 +144,19 @@ bool APlayerCharacter::CalculateProjection(const FVector& RayOrigin,
 	Intersection = FVector(RayOrigin + (Vec1 * (Dot1 / Dot2)));
 
 	return Dot2 != 0.f;
+}
+
+void APlayerCharacter::UpdateWeaponTargetPoint(const int32 WeaponId)
+{
+	const FVector SocketLocation = GetMesh()->GetSocketLocation("WeaponSocket");
+	FVector TargetPoint = FVector(ProjectionLocation.X, ProjectionLocation.Y, SocketLocation.Z);
+	const FVector UnitVec = UKismetMathLibrary::GetDirectionUnitVector(SocketLocation, TargetPoint);
+	const FVector FwdVec = GetActorForwardVector();
+	const float DotProduct = UKismetMathLibrary::Dot_VectorVector(FwdVec.GetSafeNormal(),
+	                                                              FVector(UnitVec.X, UnitVec.Y, 0.f).GetSafeNormal());
+	const float Angle = UKismetMathLibrary::DegAcos(DotProduct);
+	TargetPoint = Angle < 15 ? TargetPoint : FwdVec + FwdVec * 5000.f;
+	WeaponManagerComponent->SetWeaponTargetPoint(WeaponId, TargetPoint);
 }
 
 void APlayerCharacter::StartShooting()

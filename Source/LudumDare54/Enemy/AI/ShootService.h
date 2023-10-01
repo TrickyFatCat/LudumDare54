@@ -1,0 +1,25 @@
+// Made by Titled Goose Team during Ludum Dare 54
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "BehaviorTree/BTService.h"
+#include "ShootService.generated.h"
+
+UCLASS()
+class LUDUMDARE54_API UShootService : public UBTService
+{
+	GENERATED_BODY()
+
+public:
+	UShootService();
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI")
+	FBlackboardKeySelector PlayerActorKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI")
+	int WeaponId = 0;
+	
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+};
