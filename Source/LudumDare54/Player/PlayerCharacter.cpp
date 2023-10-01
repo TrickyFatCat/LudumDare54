@@ -37,8 +37,8 @@ void APlayerCharacter::BeginPlay()
 	}
 
 	PlayerController->SetControlRotation(FRotator(0.f, -45.f, 0.f));
-
 	WeaponMesh->SetLeaderPoseComponent(GetMesh());
+	OnTakeAnyDamage.AddDynamic(this, &APlayerCharacter::HandleAnyDamage);
 
 	Super::BeginPlay();
 }
@@ -174,4 +174,13 @@ void APlayerCharacter::UseAbility()
 void APlayerCharacter::Pause()
 {
 	UTrickyGameModeLibrary::TogglePause(this);
+}
+
+void APlayerCharacter::HandleAnyDamage(AActor* DamagedActor,
+                                       float Damage,
+                                       const UDamageType* DamageType,
+                                       AController* InstigatedBy,
+                                       AActor* DamageCauser)
+{
+	HitPointsComponent->DecreaseValue(Damage);
 }
