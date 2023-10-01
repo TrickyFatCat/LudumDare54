@@ -34,14 +34,14 @@ void ASpawnEnemySystem::StartWave()
 	if (CurrentWave == Waves.Num())
 	{
 		UE_LOG(LogSpawnEnemySystem, Display, TEXT("All waves finished."));
-		return OnAllRoundFinished.Broadcast();
+		return OnAllWaveFinished.Broadcast();
 	}
 
 	UE_LOG(LogSpawnEnemySystem, Display, TEXT("Start %i wave."), CurrentWave);
 
 	WaveData = GenerateEnemies(CurrentWave);
 	GetWorldTimerManager().SetTimer(WaveTimerHandle, this, &ASpawnEnemySystem::CreateWave, SpawnDelayDuringWave, true);
-	OnRoundStarted.Broadcast();
+	OnWaveStarted.Broadcast();
 	CurrentWave++;
 }
 
@@ -105,7 +105,7 @@ void ASpawnEnemySystem::ApplyEnemyDeath()
 	if (WaveData.SpawnFinished && WaveData.DeathCount >= WaveData.SpawnedEnemiesCount)
 	{
 		GetWorldTimerManager().SetTimer(RoundTimerHandle, this, &ASpawnEnemySystem::StartWave, WaveTimeDelay, false);
-		OnRoundFinished.Broadcast();
+		OnWaveFinished.Broadcast();
 	}
 }
 

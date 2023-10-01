@@ -9,13 +9,13 @@
 class AUBaseEnemy;
 class ASpawnPointActor;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRoundStarted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWaveStarted);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpawnRoundFinished);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRoundFinished);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWaveFinished);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllRoundFinished);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAllWaveFinished);
 
 USTRUCT(BlueprintType)
 struct FEnemiesInWaveData : public FTableRowBase
@@ -78,16 +78,16 @@ public:
 	void UpdateRandomSpawn(const bool Random) { WaveTimeDelay = Random; }
 
 	UPROPERTY(BlueprintAssignable)
-	FOnRoundStarted OnRoundStarted;
+	FOnWaveStarted OnWaveStarted;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnSpawnRoundFinished OnSpawnRoundFinished;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnRoundFinished OnRoundFinished;
+	FOnWaveFinished OnWaveFinished;
 
 	UPROPERTY(BlueprintAssignable)
-	FOnAllRoundFinished OnAllRoundFinished;
+	FOnAllWaveFinished OnAllWaveFinished;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
