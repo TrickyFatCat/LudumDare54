@@ -46,10 +46,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool StopShooting();
 
+	bool GetIsShooting() const { return bIsShooting; }
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<USceneComponent> Root = nullptr;
-	
+
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsShooting = false;
 
