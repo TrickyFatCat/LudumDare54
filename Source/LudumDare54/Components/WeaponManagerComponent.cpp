@@ -97,3 +97,8 @@ bool UWeaponManagerComponent::IsWeaponShooting(const int32 WeaponId) const
 
 	return Weapons[WeaponId]->GetIsShooting();
 }
+
+void UWeaponManagerComponent::StopAllShooting()
+{
+	for (const auto Weapon : Weapons) Weapon->StopShooting();
+}
