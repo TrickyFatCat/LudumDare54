@@ -40,6 +40,7 @@ private:
 	UPROPERTY()
 	APlayerController* PlayerController = nullptr;
 
+	UPROPERTY(BlueprintReadOnly, meta=(AllowPrivateAccess))
 	FVector ProjectionLocation = FVector::ZeroVector;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -69,6 +70,11 @@ private:
 	                         const FVector& PlaneOrigin,
 	                         const FVector& PlaneNormal,
 	                         FVector& Intersection);
+
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateWeaponTargetPoint(const int32 WeaponId);
+	
 	void StartShooting();
 
 	void StopShooting();
