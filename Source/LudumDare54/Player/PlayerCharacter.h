@@ -96,4 +96,7 @@ private:
 	                     const UDamageType* DamageType,
 	                     AController* InstigatedBy,
 	                     AActor* DamageCauser);
+
+	UFUNCTION()
+	void HandleDeath();
 };
