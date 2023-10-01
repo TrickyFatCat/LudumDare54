@@ -8,6 +8,7 @@
 
 #include "BaseEnemy.generated.h"
 
+class UAbilityComponent;
 class UWeaponManagerComponent;
 class UBehaviorTree;
 class APickupBase;
@@ -35,6 +36,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UAbilityComponent> AbilityComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animations")
 	TObjectPtr<UAnimMontage> DeathMontage = nullptr;

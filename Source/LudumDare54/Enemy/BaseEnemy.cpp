@@ -2,6 +2,7 @@
 
 #include "BaseEnemy.h"
 
+#include "AbilityComponent.h"
 #include "EnemyController.h"
 #include "PickupBase.h"
 #include "Components/CapsuleComponent.h"
@@ -19,6 +20,7 @@ ABaseEnemy::ABaseEnemy()
 
 	HitPointsComponent = CreateDefaultSubobject<UHitPointsComponent>("HitPoints");
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManager");
+	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>("Ability");
 
 	if (GetCharacterMovement())
 	{
