@@ -8,6 +8,7 @@
 
 #include "BaseEnemy.generated.h"
 
+class UWeaponManagerComponent;
 class UBehaviorTree;
 class APickupBase;
 class UHitPointsComponent;
@@ -23,14 +24,17 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnEnemyDied OnEnemyDied;
 
-	AUBaseEnemy();
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI")
 	UBehaviorTree* BehaviorTreeAsset;
+
+	AUBaseEnemy();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category="Components")
 	TObjectPtr<UHitPointsComponent> HitPointsComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Animations")
 	TObjectPtr<UAnimMontage> DeathMontage = nullptr;

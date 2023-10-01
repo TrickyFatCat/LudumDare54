@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "LudumDare54/Components/HitPointsComponent.h"
+#include "LudumDare54/Components/WeaponManagerComponent.h"
 
 AUBaseEnemy::AUBaseEnemy()
 {
@@ -17,6 +18,7 @@ AUBaseEnemy::AUBaseEnemy()
 	AIControllerClass = AEnemyController::StaticClass();
 
 	HitPointsComponent = CreateDefaultSubobject<UHitPointsComponent>("HitPoints");
+	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManager");
 
 	if (GetCharacterMovement())
 	{
