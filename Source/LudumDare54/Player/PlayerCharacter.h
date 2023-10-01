@@ -13,6 +13,7 @@ class UHitPointsComponent;
 class APlayerController;
 class UWeaponManagerComponent;
 class USkeletalMeshComponent;
+class UDashComponent;
 
 UCLASS()
 class LUDUMDARE54_API APlayerCharacter : public ACharacter
@@ -42,7 +43,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent = nullptr;
-
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UDashComponent> DashComponent = nullptr;
+ 
 private:
 	UPROPERTY()
 	APlayerController* PlayerController = nullptr;
@@ -99,4 +103,7 @@ private:
 
 	UFUNCTION()
 	void HandleDeath();
+
+	UFUNCTION()
+	void HandleDashFinished();
 };
