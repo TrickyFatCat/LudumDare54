@@ -18,7 +18,7 @@ APlayerCharacter::APlayerCharacter()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	WeaponMesh->SetupAttachment(GetMesh());
-	
+
 	HitPointsComponent = CreateDefaultSubobject<UHitPointsComponent>("HitPoints");
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManager");
 }
@@ -95,10 +95,7 @@ void APlayerCharacter::AimAtCursor()
 	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), ProjectionLocation);
 	SetActorRotation(FRotator(0.f, TargetRotation.Yaw, 0.f));
 
-	if (WeaponManagerComponent->IsWeaponShooting(0))
-	{
-		UpdateWeaponTargetPoint(0);
-	}
+	UpdateWeaponTargetPoint(0);
 }
 
 void APlayerCharacter::ProjectCursorToWorld()
@@ -155,7 +152,7 @@ void APlayerCharacter::UpdateWeaponTargetPoint(const int32 WeaponId)
 	const float DotProduct = UKismetMathLibrary::Dot_VectorVector(FwdVec.GetSafeNormal(),
 	                                                              FVector(UnitVec.X, UnitVec.Y, 0.f).GetSafeNormal());
 	const float Angle = UKismetMathLibrary::DegAcos(DotProduct);
-	TargetPoint = Angle < 15 ? TargetPoint : FwdVec + FwdVec * 5000.f;
+	TargetPoint = Angle < AimAngleThreshold ? TargetPoint : FwdVec + FwdVec * 5000.f;
 	WeaponManagerComponent->SetWeaponTargetPoint(WeaponId, TargetPoint);
 }
 

@@ -9,6 +9,12 @@
 class AProjectileBase;
 class USceneComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShotSignature);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartShootingSignature);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStopShootingSignature);
+
 UCLASS()
 class LUDUMDARE54_API AWeaponBase : public AActor
 {
@@ -28,15 +34,24 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FVector TargetPoint = FVector::ZeroVector;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(ClampMin="0.25", ClampMax="15"))
-	float RateOfFire = 10.f;
+	UPROPERTY(BlueprintAssignable)
+	FOnShotSignature OnShot;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(ClampMin="1", ClampMax="30"))
-	int32 ProjectilesPerShot = 1;
+	UPROPERTY(BlueprintAssignable)
+	FOnStartShootingSignature OnStartShooting;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int32 DamagePerProjectile = 5;
+	UPROPERTY(BlueprintAssignable)
+	FOnStopShootingSignature OnStopShooting;
 
+	UFUNCTION(BlueprintCallable)
+	void SetRateOfFire(const float Value);
+
+	UFUNCTION(BlueprintCallable)
+	void SetProjectilePerShot(const int32 Value);
+
+	UFUNCTION(BlueprintCallable)
+	void SetDamagePerProjectile(const int32 Value);
+	
 	UFUNCTION(BlueprintCallable)
 	bool MakeShot();
 
@@ -49,9 +64,24 @@ public:
 	bool GetIsShooting() const { return bIsShooting; }
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<USceneComponent> Root = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(ClampMin="0.25", ClampMax="15"))
+	float RateOfFire = 10.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(ClampMin="1", ClampMax="30"))
+	int32 ProjectilesPerShot = 1;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 DamagePerProjectile = 5;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MuzzleOffset = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ShotAngle = 45.f;
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsShooting = false;
 
