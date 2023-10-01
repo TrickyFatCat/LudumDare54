@@ -82,10 +82,12 @@ void UDashComponent::SetIsDashing(const bool bEnableDash)
 	if (bIsDashing)
 	{
 		Character->DisableInput(PlayerController);
+		Character->SetCanBeDamaged(false);
 	}
 	else
 	{
 		Character->EnableInput(PlayerController);
+		Character->SetCanBeDamaged(true);
 		OnDashFinished.Broadcast();
 	};
 }

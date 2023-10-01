@@ -12,6 +12,7 @@
 #include "LudumDare54/Components/HitPointsComponent.h"
 #include "LudumDare54/Components/WeaponManagerComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "LudumDare54/Components/DashComponent.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -44,7 +45,6 @@ void APlayerCharacter::BeginPlay()
 	WeaponMesh->SetLeaderPoseComponent(GetMesh());
 	OnTakeAnyDamage.AddDynamic(this, &APlayerCharacter::HandleAnyDamage);
 	HitPointsComponent->OnValueZero.AddDynamic(this, &APlayerCharacter::HandleDeath);
-	DashComponent->OnDashFinished.AddDynamic(this, &APlayerCharacter::HandleDashFinished);
 	Super::BeginPlay();
 }
 
@@ -74,7 +74,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 
 		//Using Ability
-		EnhancedInputComponent->BindAction(AbilityAction, ETriggerEvent::Triggered, this,
+		EnhancedInputComponent->BindAction(AbilityAction, ETriggerEvent::Started, this,
 		                                   &APlayerCharacter::UseAbility);
 
 		//Pause
@@ -185,7 +185,6 @@ void APlayerCharacter::UseAbility()
     		Direction.Z = 0.f;
     	}
     
-		SetCanBeDamaged(false);
     	DashComponent->Dash(Direction);
 }
 
@@ -212,10 +211,6 @@ void APlayerCharacter::HandleDeath()
 		GameMode->FinishSession(false);
 	}
 
+	GetMovementComponent()->StopMovementImmediately();
 	WeaponManagerComponent->StopShooting(0);
-}
-
-void APlayerCharacter::HandleDashFinished()
-{
-	SetCanBeDamaged(true);
 }

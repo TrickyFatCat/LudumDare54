@@ -103,7 +103,4 @@ private:
 
 	UFUNCTION()
 	void HandleDeath();
-
-	UFUNCTION()
-	void HandleDashFinished();
 };
