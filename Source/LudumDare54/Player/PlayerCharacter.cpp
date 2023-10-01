@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "TrickyGameModeBase.h"
 #include "TrickyGameModeLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/PlayerController.h"
@@ -39,6 +40,7 @@ void APlayerCharacter::BeginPlay()
 	PlayerController->SetControlRotation(FRotator(0.f, -45.f, 0.f));
 	WeaponMesh->SetLeaderPoseComponent(GetMesh());
 	OnTakeAnyDamage.AddDynamic(this, &APlayerCharacter::HandleAnyDamage);
+	HitPointsComponent->OnValueZero.AddDynamic(this, &APlayerCharacter::HandleDeath);
 
 	Super::BeginPlay();
 }
@@ -47,7 +49,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AimAtCursor();
+	if (HitPointsComponent->GetValue() > 0)
+	{
+		AimAtCursor();
+	}
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -183,4 +188,16 @@ void APlayerCharacter::HandleAnyDamage(AActor* DamagedActor,
                                        AActor* DamageCauser)
 {
 	HitPointsComponent->DecreaseValue(Damage);
+}
+
+void APlayerCharacter::HandleDeath()
+{
+	ATrickyGameModeBase* GameMode = UTrickyGameModeLibrary::GetTrickyGameMode(this);
+
+	if (GameMode)
+	{
+		GameMode->FinishSession(false);
+	}
+
+	WeaponManagerComponent->StopShooting(0);
 }
