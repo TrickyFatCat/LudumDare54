@@ -33,10 +33,10 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float AimAngleThreshold = 15.f;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh = nullptr;
-	
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UHitPointsComponent> HitPointsComponent = nullptr;
 
@@ -81,7 +81,7 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateWeaponTargetPoint(const int32 WeaponId);
-	
+
 	void StartShooting();
 
 	void StopShooting();
@@ -89,4 +89,11 @@ private:
 	void UseAbility();
 
 	void Pause();
+
+	UFUNCTION()
+	void HandleAnyDamage(AActor* DamagedActor,
+	                     float Damage,
+	                     const UDamageType* DamageType,
+	                     AController* InstigatedBy,
+	                     AActor* DamageCauser);
 };
