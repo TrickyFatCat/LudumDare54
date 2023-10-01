@@ -26,7 +26,7 @@ class LUDUMDARE54_API ASpawnPointActor : public AActor
 public:
 	ASpawnPointActor();
 
-	AUBaseEnemy* Spawn(UClass* Monster);
+	ABaseEnemy* Spawn(UClass* Monster);
 	
 	UFUNCTION(BlueprintCallable)
 	void Lock() { State = EWaveState::Block; };

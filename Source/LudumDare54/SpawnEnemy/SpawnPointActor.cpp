@@ -22,7 +22,7 @@ ASpawnPointActor::ASpawnPointActor()
 	CollisionComponent->OnComponentEndOverlap.AddDynamic(this, &ASpawnPointActor::OnEndOverlap);
 }
 
-AUBaseEnemy* ASpawnPointActor::Spawn(UClass* Monster)
+ABaseEnemy* ASpawnPointActor::Spawn(UClass* Monster)
 {
 	if (bIsBlocked || State != EWaveState::Ready || GetWorld() == nullptr) return nullptr;
 
@@ -30,14 +30,14 @@ AUBaseEnemy* ASpawnPointActor::Spawn(UClass* Monster)
 
 	const auto Location = GetActorLocation();
 	const auto Rotation = GetActorRotation();
-	const auto Actor = Cast<AUBaseEnemy>(GetWorld()->SpawnActor(Monster, &Location, &Rotation));
+	const auto Actor = Cast<ABaseEnemy>(GetWorld()->SpawnActor(Monster, &Location, &Rotation));
 	if (Actor == nullptr) return nullptr;
 
 	// FHitResult HitResult;
 	// HitResult.ImpactPoint = Actor->GetActorLocation();
 	// ProjectileFX->PlayFXAtPoint(HitResult);
 
-	Cast<AUBaseEnemy>(Actor)->GetMesh()->SetVisibility(true);
+	Cast<ABaseEnemy>(Actor)->GetMesh()->SetVisibility(true);
 	State = EWaveState::Frozen;
 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ASpawnPointActor::RemoveFreeze, FreezingTime);

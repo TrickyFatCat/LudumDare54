@@ -111,7 +111,7 @@ void ASpawnEnemySystem::ApplyEnemyDeath()
 
 FWaveData ASpawnEnemySystem::GenerateEnemies(const int WaveIndex)
 {
-	TArray<TSubclassOf<AUBaseEnemy>> Enemies;
+	TArray<TSubclassOf<ABaseEnemy>> Enemies;
 
 	TArray<FEnemiesInWaveData*> AllEnemies;
 	Waves[WaveIndex]->GetAllRows<FEnemiesInWaveData>("", AllEnemies);

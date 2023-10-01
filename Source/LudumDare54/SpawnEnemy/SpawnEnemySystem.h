@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "SpawnEnemySystem.generated.h"
 
-class AUBaseEnemy;
+class ABaseEnemy;
 class ASpawnPointActor;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWaveStarted, int, CurrentNumberOfWave);
@@ -23,7 +23,7 @@ struct FEnemiesInWaveData : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
-	TSubclassOf<AUBaseEnemy> Enemy;
+	TSubclassOf<ABaseEnemy> Enemy;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy", meta = (ClampMin = "1", UIMin = "1"))
 	int Count;
@@ -35,7 +35,7 @@ struct FWaveData
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<TSubclassOf<AUBaseEnemy>> Enemies;
+	TArray<TSubclassOf<ABaseEnemy>> Enemies;
 
 	UPROPERTY(BlueprintReadOnly)
 	float SpawnDelayDuringWave;

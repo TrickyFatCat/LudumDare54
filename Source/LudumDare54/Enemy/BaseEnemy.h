@@ -16,7 +16,7 @@ class UHitPointsComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyDied);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class LUDUMDARE54_API AUBaseEnemy : public ACharacter
+class LUDUMDARE54_API ABaseEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -27,7 +27,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI")
 	UBehaviorTree* BehaviorTreeAsset;
 
-	AUBaseEnemy();
+	ABaseEnemy();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")

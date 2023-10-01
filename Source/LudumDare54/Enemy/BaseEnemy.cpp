@@ -10,7 +10,7 @@
 #include "LudumDare54/Components/HitPointsComponent.h"
 #include "LudumDare54/Components/WeaponManagerComponent.h"
 
-AUBaseEnemy::AUBaseEnemy()
+ABaseEnemy::ABaseEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -28,15 +28,15 @@ AUBaseEnemy::AUBaseEnemy()
 	}
 }
 
-void AUBaseEnemy::Die()
+void ABaseEnemy::Die()
 {
-	HitPointsComponent->OnValueZero.RemoveDynamic(this, &AUBaseEnemy::Die);
+	HitPointsComponent->OnValueZero.RemoveDynamic(this, &ABaseEnemy::Die);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PlayAnimMontage(DeathMontage);
 	SpawnPickup();
 }
 
-void AUBaseEnemy::SpawnPickup() const
+void ABaseEnemy::SpawnPickup() const
 {
 	if (PickupClass || FMath::RandRange(0, 100) >= DropChance) return;
 
@@ -48,7 +48,7 @@ void AUBaseEnemy::SpawnPickup() const
 	);
 }
 
-float AUBaseEnemy::TakeDamage(
+float ABaseEnemy::TakeDamage(
 	float DamageAmount,
 	FDamageEvent const& DamageEvent,
 	AController* EventInstigator,
@@ -59,15 +59,15 @@ float AUBaseEnemy::TakeDamage(
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
-void AUBaseEnemy::BeginPlay()
+void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	HitPointsComponent->OnValueZero.AddDynamic(this, &AUBaseEnemy::Die);
+	HitPointsComponent->OnValueZero.AddDynamic(this, &ABaseEnemy::Die);
 }
 
-void AUBaseEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void ABaseEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	HitPointsComponent->OnValueZero.RemoveDynamic(this, &AUBaseEnemy::Die);
+	HitPointsComponent->OnValueZero.RemoveDynamic(this, &ABaseEnemy::Die);
 	OnEnemyDied.Broadcast();
 	Super::EndPlay(EndPlayReason);
 }

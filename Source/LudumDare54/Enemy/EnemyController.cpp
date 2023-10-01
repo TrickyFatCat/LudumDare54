@@ -18,7 +18,7 @@ void AEnemyController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	const auto Char = Cast<AUBaseEnemy>(InPawn);
+	const auto Char = Cast<ABaseEnemy>(InPawn);
 	if (Char == nullptr) return;
 
 	RunBehaviorTree(Char->BehaviorTreeAsset);
