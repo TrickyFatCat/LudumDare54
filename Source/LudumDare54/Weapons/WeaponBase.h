@@ -26,7 +26,7 @@ public:
 	TSubclassOf<AProjectileBase> ProjectileClass = nullptr;
 
 	UPROPERTY(BlueprintReadWrite)
-	FVector TargetLocation = FVector::ZeroVector;
+	FVector TargetPoint = FVector::ZeroVector;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(ClampMin="0.25", ClampMax="15"))
 	float RateOfFire = 10.f;

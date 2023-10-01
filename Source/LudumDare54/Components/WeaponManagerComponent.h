@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool StopShooting(const int32 WeaponId);
 
+	UFUNCTION(BlueprintCallable)
+	bool SetWeaponTargetPoint(const int32 WeaponId, const FVector& TargetPoint);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<TSubclassOf<AWeaponBase>, FName> WeaponsToSpawn;

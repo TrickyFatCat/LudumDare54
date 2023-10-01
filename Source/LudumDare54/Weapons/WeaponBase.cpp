@@ -33,13 +33,13 @@ bool AWeaponBase::MakeShot()
 		return false;
 	}
 
-	FVector StartPoint = GetActorLocation();
-	FVector EndPoint = TargetLocation;
-	FVector Direction = (EndPoint - StartPoint).GetSafeNormal();
+	const FVector StartPoint = GetActorLocation();
+	const FVector Direction = (TargetPoint - StartPoint).GetSafeNormal();
 
 	for (int32 i = 0; i <= ProjectilesPerShot; i++)
 	{
 		const FTransform SpawnTransform(FRotator::ZeroRotator, StartPoint);
+		
 		AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(ProjectileClass, SpawnTransform);
 
 		if (Projectile)

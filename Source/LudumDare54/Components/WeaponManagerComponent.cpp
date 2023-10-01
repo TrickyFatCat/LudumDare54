@@ -76,3 +76,14 @@ bool UWeaponManagerComponent::StopShooting(const int32 WeaponId)
 
 	return Weapons[WeaponId]->StopShooting();
 }
+
+bool UWeaponManagerComponent::SetWeaponTargetPoint(const int32 WeaponId, const FVector& TargetPoint)
+{
+	if (!IsValidId(WeaponId))
+	{
+		return false;
+	}
+
+	Weapons[WeaponId]->TargetPoint = TargetPoint;
+	return true;
+}
