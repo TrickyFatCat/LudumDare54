@@ -16,5 +16,5 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	FName PlayerActorKeyName = "PlayerActor";
+	FName PlayerActorKeyName = "Player";
 };
