@@ -23,6 +23,7 @@ public class LudumDare54 : ModuleRules
 			"TrickyLevelHelpers",
 			"TrickyPickups",
 			"AIModule",
+			"NavigationSystem",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
