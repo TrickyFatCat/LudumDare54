@@ -16,14 +16,15 @@ void USingleShootService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 {
 	const auto Controller = OwnerComp.GetAIOwner();
 	const auto Blackboard = OwnerComp.GetBlackboardComponent();
+	const auto Player = Cast<APawn>(Blackboard->GetValueAsObject(PlayerActorKey.SelectedKeyName));
 
-	if (
-		const auto HasAim = Blackboard && Blackboard->GetValueAsObject(PlayerActorKey.SelectedKeyName);
-		HasAim && Controller
-	)
+	if (Blackboard && Player && Controller)
 	{
-		const auto Weapon = Controller->GetPawn()->FindComponentByClass<UWeaponManagerComponent>();
-		if (Weapon) Weapon->MakeShot(WeaponId);
+		if (const auto Weapon = Controller->GetPawn()->FindComponentByClass<UWeaponManagerComponent>())
+		{
+			Weapon->SetWeaponTargetPoint(WeaponId, Player->GetActorLocation());
+			Weapon->MakeShot(WeaponId);
+		}
 	}
 
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
