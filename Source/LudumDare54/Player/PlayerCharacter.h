@@ -31,6 +31,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float AimAngleThreshold = 15.f;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh = nullptr;
 	

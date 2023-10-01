@@ -4,6 +4,7 @@
 #include "WeaponBase.h"
 
 #include "ProjectileBase.h"
+#include "Kismet/KismetMaterialLibrary.h"
 
 
 AWeaponBase::AWeaponBase()
@@ -26,6 +27,34 @@ void AWeaponBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AWeaponBase::SetRateOfFire(const float Value)
+{
+	RateOfFire = Value <= 0.f ? 1.f : Value;
+	ShotDelay = 1.f / RateOfFire;
+
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+
+	if (TimerManager.IsTimerActive(ShotDelayTimer))
+	{
+		TimerManager.ClearTimer(ShotDelayTimer);
+		TimerManager.SetTimer(ShotDelayTimer,
+		                      this,
+		                      &AWeaponBase::HandleShotDelayTimer,
+		                      ShotDelay,
+		                      true);
+	}
+}
+
+void AWeaponBase::SetProjectilePerShot(const int32 Value)
+{
+	ProjectilesPerShot = Value;
+}
+
+void AWeaponBase::SetDamagePerProjectile(const int32 Value)
+{
+	DamagePerProjectile = Value;
+}
+
 bool AWeaponBase::MakeShot()
 {
 	if (!ProjectileClass)
@@ -34,12 +63,15 @@ bool AWeaponBase::MakeShot()
 	}
 
 	const FVector StartPoint = GetActorLocation();
-	const FVector Direction = (TargetPoint - StartPoint).GetSafeNormal();
 
-	for (int32 i = 0; i <= ProjectilesPerShot; i++)
+	const float Theta = FMath::DegreesToRadians(ShotAngle / ProjectilesPerShot);
+	const float Phi = FMath::DegreesToRadians(ShotAngle * 0.5) - Theta * 0.5;
+
+	for (int32 i = 0; i < ProjectilesPerShot; i++)
 	{
-		const FTransform SpawnTransform(FRotator::ZeroRotator, StartPoint);
-		
+		FVector Direction = (TargetPoint - StartPoint).GetSafeNormal();
+		Direction = Direction.RotateAngleAxisRad(Theta * i - Phi, FVector::UpVector);
+		const FTransform SpawnTransform(FRotator::ZeroRotator, StartPoint + Direction * MuzzleOffset);
 		AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(ProjectileClass, SpawnTransform);
 
 		if (Projectile)
@@ -50,6 +82,7 @@ bool AWeaponBase::MakeShot()
 		}
 	}
 
+	OnShot.Broadcast();
 	return true;
 }
 
@@ -71,6 +104,7 @@ bool AWeaponBase::StartShooting()
 	                                       &AWeaponBase::HandleShotDelayTimer,
 	                                       ShotDelay,
 	                                       true);
+	OnStartShooting.Broadcast();
 	return true;
 }
 
@@ -83,6 +117,7 @@ bool AWeaponBase::StopShooting()
 
 	bIsShooting = false;
 	bCanShoot = false;
+	OnStopShooting.Broadcast();
 	return true;
 }
 
