@@ -41,7 +41,7 @@ void ASpawnEnemySystem::StartWave()
 
 	WaveData = GenerateEnemies(CurrentWave);
 	GetWorldTimerManager().SetTimer(WaveTimerHandle, this, &ASpawnEnemySystem::CreateWave, SpawnDelayDuringWave, true);
-	OnWaveStarted.Broadcast();
+	OnWaveStarted.Broadcast(CurrentWave);
 	CurrentWave++;
 }
 
@@ -105,7 +105,7 @@ void ASpawnEnemySystem::ApplyEnemyDeath()
 	if (WaveData.SpawnFinished && WaveData.DeathCount >= WaveData.SpawnedEnemiesCount)
 	{
 		GetWorldTimerManager().SetTimer(RoundTimerHandle, this, &ASpawnEnemySystem::StartWave, WaveTimeDelay, false);
-		OnWaveFinished.Broadcast();
+		OnWaveFinished.Broadcast(CurrentWave);
 	}
 }
 
