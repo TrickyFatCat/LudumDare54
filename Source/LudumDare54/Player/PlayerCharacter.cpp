@@ -12,6 +12,8 @@
 #include "LudumDare54/Components/HitPointsComponent.h"
 #include "LudumDare54/Components/WeaponManagerComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
+#include "LudumDare54/Components/DashComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -22,6 +24,8 @@ APlayerCharacter::APlayerCharacter()
 
 	HitPointsComponent = CreateDefaultSubobject<UHitPointsComponent>("HitPoints");
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManager");
+
+	DashComponent = CreateDefaultSubobject<UDashComponent>("DashComponent");
 }
 
 void APlayerCharacter::BeginPlay()
@@ -41,7 +45,6 @@ void APlayerCharacter::BeginPlay()
 	WeaponMesh->SetLeaderPoseComponent(GetMesh());
 	OnTakeAnyDamage.AddDynamic(this, &APlayerCharacter::HandleAnyDamage);
 	HitPointsComponent->OnValueZero.AddDynamic(this, &APlayerCharacter::HandleDeath);
-
 	Super::BeginPlay();
 }
 
@@ -71,7 +74,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 
 		//Using Ability
-		EnhancedInputComponent->BindAction(AbilityAction, ETriggerEvent::Triggered, this,
+		EnhancedInputComponent->BindAction(AbilityAction, ETriggerEvent::Started, this,
 		                                   &APlayerCharacter::UseAbility);
 
 		//Pause
@@ -173,7 +176,16 @@ void APlayerCharacter::StopShooting()
 
 void APlayerCharacter::UseAbility()
 {
-	UE_LOG(LogTemp, Error, TEXT("I used an ability"));
+		FVector Direction = GetActorForwardVector();
+	
+    	if (GetVelocity().GetSafeNormal() != FVector::ZeroVector)
+    	{
+    		Direction.X = GetVelocity().GetSafeNormal().X;
+    		Direction.Y = GetVelocity().GetSafeNormal().Y;
+    		Direction.Z = 0.f;
+    	}
+    
+    	DashComponent->Dash(Direction);
 }
 
 void APlayerCharacter::Pause()
@@ -199,5 +211,6 @@ void APlayerCharacter::HandleDeath()
 		GameMode->FinishSession(false);
 	}
 
+	GetMovementComponent()->StopMovementImmediately();
 	WeaponManagerComponent->StopShooting(0);
 }

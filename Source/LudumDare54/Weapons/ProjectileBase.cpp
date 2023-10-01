@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "LudumDare54/Components/HitPointsComponent.h"
 
 
@@ -47,13 +48,15 @@ void AProjectileBase::HandleProjectileHit(UPrimitiveComponent* HitComponent,
 {
 	if (OtherActor)
 	{
-		UHitPointsComponent* HitPointsComponent = OtherActor->FindComponentByClass<UHitPointsComponent>();
+		// UHitPointsComponent* HitPointsComponent = OtherActor->FindComponentByClass<UHitPointsComponent>();
 
-		if (HitPointsComponent)
-		{
-			HitPointsComponent->DecreaseValue(Power);
-		}
+		// if (HitPointsComponent)
+		// {
+			// HitPointsComponent->DecreaseValue(Power);
+		// }
+		UGameplayStatics::ApplyDamage(OtherActor, Power, nullptr, this, nullptr);
 	}
+	
 
 	Destroy();
 }
