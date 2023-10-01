@@ -38,6 +38,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsWeaponShooting(const int32 WeaponId) const;
 
+	UFUNCTION(BlueprintCallable)
+	void StopAllShooting();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<TSubclassOf<AWeaponBase>, FName> WeaponsToSpawn;

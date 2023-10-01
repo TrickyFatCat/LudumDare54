@@ -30,6 +30,7 @@ ABaseEnemy::ABaseEnemy()
 
 void ABaseEnemy::Die()
 {
+	WeaponManagerComponent->StopAllShooting();
 	OnEnemyDied.Broadcast();
 	HitPointsComponent->OnValueZero.RemoveDynamic(this, &ABaseEnemy::Die);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
