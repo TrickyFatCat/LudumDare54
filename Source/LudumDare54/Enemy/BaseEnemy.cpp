@@ -30,6 +30,7 @@ ABaseEnemy::ABaseEnemy()
 
 void ABaseEnemy::Die()
 {
+	OnEnemyDied.Broadcast();
 	HitPointsComponent->OnValueZero.RemoveDynamic(this, &ABaseEnemy::Die);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PlayAnimMontage(DeathMontage);
@@ -68,6 +69,5 @@ void ABaseEnemy::BeginPlay()
 void ABaseEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	HitPointsComponent->OnValueZero.RemoveDynamic(this, &ABaseEnemy::Die);
-	OnEnemyDied.Broadcast();
 	Super::EndPlay(EndPlayReason);
 }
