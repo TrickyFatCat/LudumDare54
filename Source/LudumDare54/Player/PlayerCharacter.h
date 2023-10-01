@@ -12,6 +12,7 @@ class UInputAction;
 class UHitPointsComponent;
 class APlayerController;
 class UWeaponManagerComponent;
+class USkeletalMeshComponent;
 
 UCLASS()
 class LUDUMDARE54_API APlayerCharacter : public ACharacter
@@ -30,7 +31,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Category="Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
+	TObjectPtr<USkeletalMeshComponent> WeaponMesh = nullptr;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UHitPointsComponent> HitPointsComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Components")

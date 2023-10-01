@@ -10,11 +10,15 @@
 #include "GameFramework/PlayerController.h"
 #include "LudumDare54/Components/HitPointsComponent.h"
 #include "LudumDare54/Components/WeaponManagerComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
+	WeaponMesh->SetupAttachment(GetMesh());
+	
 	HitPointsComponent = CreateDefaultSubobject<UHitPointsComponent>("HitPoints");
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManager");
 }
@@ -33,6 +37,8 @@ void APlayerCharacter::BeginPlay()
 	}
 
 	PlayerController->SetControlRotation(FRotator(0.f, -45.f, 0.f));
+
+	WeaponMesh->SetLeaderPoseComponent(GetMesh());
 
 	Super::BeginPlay();
 }
