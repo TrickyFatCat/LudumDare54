@@ -52,11 +52,12 @@ void AProjectileBase::HandleProjectileHit(UPrimitiveComponent* HitComponent,
 
 		// if (HitPointsComponent)
 		// {
-			// HitPointsComponent->DecreaseValue(Power);
+		// HitPointsComponent->DecreaseValue(Power);
 		// }
 		UGameplayStatics::ApplyDamage(OtherActor, Power, nullptr, this, nullptr);
 	}
-	
+
+	OnHit.Broadcast();
 
 	Destroy();
 }

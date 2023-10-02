@@ -9,6 +9,8 @@
 class UProjectileMovementComponent;
 class USphereComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHitSignature);
+
 UCLASS()
 class LUDUMDARE54_API AProjectileBase : public AActor
 {
@@ -29,6 +31,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<USphereComponent> SphereComponent;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHitSignature OnHit;
 
 public:
 	void SetProjectileData(const FVector& Direction, const int32 Damage);
