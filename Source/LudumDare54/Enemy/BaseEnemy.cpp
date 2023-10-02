@@ -36,7 +36,7 @@ void ABaseEnemy::Die()
 	OnEnemyDied.Broadcast();
 	HitPointsComponent->OnValueZero.RemoveDynamic(this, &ABaseEnemy::Die);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	PlayAnimMontage(DeathMontage);
+	//PlayAnimMontage(DeathMontage);
 	SpawnPickup();
 }
 
