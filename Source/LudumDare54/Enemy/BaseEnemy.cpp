@@ -42,11 +42,12 @@ void ABaseEnemy::Die()
 
 void ABaseEnemy::SpawnPickup() const
 {
-	if (PickupClass || FMath::RandRange(0, 100) >= DropChance) return;
+	if (PickupClass == nullptr || FMath::RandRange(0, 100) > DropChance) return;
 
+	auto Location = GetMesh()->GetComponentLocation();
 	GetWorld()->SpawnActor<APickupBase>(
 		PickupClass,
-		GetMesh()->GetComponentLocation(),
+		{Location.X, Location.Y, Location.Z + 25.0},
 		GetActorRotation(),
 		FActorSpawnParameters()
 	);
