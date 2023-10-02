@@ -37,7 +37,7 @@ void ASpawnEnemySystem::StartWave()
 	{
 		UE_LOG(LogSpawnEnemySystem, Display, TEXT("All waves finished."));
 		ATrickyGameModeBase* GameMode = UTrickyGameModeLibrary::GetTrickyGameMode(this);
-		if (GameMode) GameMode->FinishSession(false);
+		if (GameMode) GameMode->FinishSession(true);
 		
 		return OnAllWaveFinished.Broadcast();
 	}
