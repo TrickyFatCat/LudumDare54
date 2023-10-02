@@ -3,6 +3,7 @@
 
 #include "TrickyPlayerControllerBase.h"
 
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -37,14 +38,19 @@ void ATrickyPlayerControllerBase::HandleGameStateChange_Implementation(EGameMode
 		bEnableInput ? EnableInput(this) : DisableInput(this);
 		bShowMouseCursor = bShowCursor;
 		SetInputMode(InputMode);
+		
 	};
 
 	switch (NewState)
 	{
 	case EGameModeState::InProgress:
-		ToggleInput(true, bShowCursorOnStart, FInputModeGameOnly());
-		UGameplayStatics::SetViewportMouseCaptureMode(this,
-		                                              EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown);
+		// FInputModeGameAndUI InputMode;
+		// InputMode.SetHideCursorDuringCapture(false);
+
+		// UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(this, nullptr, EMouseLockMode::DoNotLock, false);
+		// ToggleInput(true, bShowCursorOnStart, FInputModeGameAndUI());
+		// UGameplayStatics::SetViewportMouseCaptureMode(this,
+		                                              // EMouseCaptureMode::CapturePermanently_IncludingInitialMouseDown);
 		break;
 
 	case EGameModeState::Lose:
