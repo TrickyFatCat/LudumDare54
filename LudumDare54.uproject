@@ -36,11 +36,11 @@
 		},
 		{
 			"Name": "TrickyDoors",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
 			"Name": "TrickyButtons",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
 			"Name": "TrickyUserInterface",
@@ -48,7 +48,7 @@
 		},
 		{
 			"Name": "TrickyStatusEffects",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
 			"Name": "TrickyLevelHelpers",
