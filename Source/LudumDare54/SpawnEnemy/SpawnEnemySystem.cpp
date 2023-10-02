@@ -5,6 +5,8 @@
 
 #include "EngineUtils.h"
 #include "SpawnPointActor.h"
+#include "TrickyGameModeBase.h"
+#include "TrickyGameModeLibrary.h"
 #include "LudumDare54/Enemy/BaseEnemy.h"
 
 DECLARE_LOG_CATEGORY_CLASS(LogSpawnEnemySystem, All, All);
@@ -34,6 +36,9 @@ void ASpawnEnemySystem::StartWave()
 	if (CurrentWave == Waves.Num())
 	{
 		UE_LOG(LogSpawnEnemySystem, Display, TEXT("All waves finished."));
+		ATrickyGameModeBase* GameMode = UTrickyGameModeLibrary::GetTrickyGameMode(this);
+		if (GameMode) GameMode->FinishSession(false);
+		
 		return OnAllWaveFinished.Broadcast();
 	}
 
