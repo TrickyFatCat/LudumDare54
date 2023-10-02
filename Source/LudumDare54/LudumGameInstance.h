@@ -6,7 +6,9 @@
 #include "Engine/GameInstance.h"
 #include "LudumGameInstance.generated.h"
 
-constexpr int32 DefaultStageNumber = 1;
+constexpr int32 DefaultStageNumber = 0;
+
+class UWorld;
 
 /**
  * 
@@ -24,5 +26,11 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	int32 StageNumber = 1;
+	int32 StageNumber = 0;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSoftObjectPtr<UWorld>> Levels;
+
+	UFUNCTION(BlueprintCallable)
+	void OpenNextLevel(UObject* World);
 };
