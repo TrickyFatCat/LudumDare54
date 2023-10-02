@@ -46,7 +46,7 @@ void UDashComponent::Dash(const FVector& Direction)
 	const FTimerDelegate DashTimerDelegate = FTimerDelegate::CreateUObject(this, &UDashComponent::SetIsDashing, false);
 	GetWorld()->GetTimerManager().SetTimer(DashTimerHandle, DashTimerDelegate, DashTime, false);
 
-	GetWorld()->GetTimerManager().SetTimer(DashCooldownHandle, DashCooldown, false);
+	GetWorld()->GetTimerManager().SetTimer(DashCooldownHandle, this, &UDashComponent::CallDelegate, DashCooldown, false);
 
 	OnDashActivated.Broadcast();
 }
@@ -90,4 +90,9 @@ void UDashComponent::SetIsDashing(const bool bEnableDash)
 		Character->SetCanBeDamaged(true);
 		OnDashFinished.Broadcast();
 	};
+}
+
+void UDashComponent::CallDelegate()
+{
+	OnCooldownFinished.Broadcast();
 }

@@ -12,6 +12,7 @@ class APlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDashActivatedSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDashFishishedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDashCooldowFinishedSignature);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class LUDUMDARE54_API UDashComponent : public UActorComponent
@@ -46,6 +47,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category=Dash)
 	FOnDashFishishedSignature OnDashFinished;
 	
+	UPROPERTY(BlueprintAssignable, Category=Dash)
+	FOnDashCooldowFinishedSignature OnCooldownFinished;
+	
 	UFUNCTION(BlueprintCallable, BlueprintGetter, Category=Dash)
 	bool GetIsDashing();
 
@@ -76,4 +80,7 @@ protected:
 
 	UFUNCTION()
 	void SetIsDashing(const bool bEnableDash);
+
+	UFUNCTION()
+	void CallDelegate();
 };
